@@ -15,6 +15,6 @@ export class RegistrDto{
     name:string
 
     @IsNotEmpty()
-    role:'USER' | 'TEACHER'
+    role:'USER' | 'AUTHOR'
 
 }

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Put, UseGuards} from '@nestjs/common';
-import { Role } from 'decorators/Role.decorator';
+import { Role } from 'src/decorators/Role.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { RoleGuard } from 'src/guards/role.guard';
 import { UpdateUserDto } from './dto/UpdateUser.dto';
@@ -22,8 +22,8 @@ export class UserController {
     }
 
     @Delete('id')
-    @Role('ADMIN')
     @UseGuards(RoleGuard)
+    @Role(["ADMIN"])
     deleteUserById(@Param('id') id:string){
         return this.userService.deleteById(id)
     }

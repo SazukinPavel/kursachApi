@@ -1,8 +1,6 @@
 import { Injectable, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from 'decorators/Role.decorator';
 import { User } from 'src/entitys/User.entity';
-import { RoleGuard } from 'src/guards/role.guard';
 import { Repository } from 'typeorm';
 import { AddUserDto } from './dto/AddUser.dto';
 import { UpdateUserDto } from './dto/UpdateUser.dto';
@@ -16,7 +14,7 @@ export class UserService {
         return this.userRepo.save(addUserDto)
     }
 
-    findByName(name:string){
+    findByName(name:string,selectPassword=false){
         return this.userRepo.findOne({where:{name}})
     }
 
@@ -29,7 +27,7 @@ export class UserService {
     }
 
     findById(id:string){
-        return this.userRepo.findOne({id})
+        return this.userRepo.findOne(id)
     }
 
     getUsers(){

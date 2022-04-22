@@ -1,7 +1,9 @@
+import { Author} from './Author.entity';
 import { RoleType } from "src/types/RoleType";
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Course } from "./Course.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Solution } from "./Solution.entity";
+import { Subscription } from "./Subscription.entity";
+import { Exclude } from 'class-transformer';
 
 @Entity('users')
 export class User{
@@ -18,15 +20,16 @@ export class User{
     @Column()
     password:string
 
+    @Exclude({ toPlainOnly: true })
     @Column()
     role:RoleType
 
-    @ManyToMany(()=>Course,(course)=>course.authors)
-    ownCourses:Course[]
+    @OneToMany(()=>Author,(author)=>author.user)
+    ownCourses:Author[]
 
-    @ManyToMany(()=>Course,course=>course.subscribers)
-    subscriptions:Course[]
-
-    @ManyToMany(()=>Solution,course=>course.owner)
+    @OneToMany(()=>Solution,solution=>solution.owner)
     solutions:Solution[]
+    
+    @OneToMany(()=>Subscription,subscription=>subscription.user)
+    subscriptions:Subscription[]
 }

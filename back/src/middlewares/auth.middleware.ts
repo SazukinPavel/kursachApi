@@ -13,7 +13,7 @@ export class AuthMiddleware implements NestMiddleware{
 
     async use(req: Request, res: any, next: (error?: any) => void) {
         req.user=null
-        const token=req.headers.get('token')
+        const token=req.headers['authorization']
         if(token){
             const jwtUser=verify(token,SECRET_KEY) as User
             if(jwtUser){

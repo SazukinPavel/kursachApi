@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { Role } from 'decorators/Role.decorator';
-import { GetUser } from 'decorators/User.decorator';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Role } from 'src/decorators/Role.decorator';
+import { GetUser } from 'src/decorators/User.decorator';
 import { User } from 'src/entitys/User.entity';
 import { RoleGuard } from 'src/guards/role.guard';
 import { CourseService } from './course.service';
@@ -13,26 +13,31 @@ export class CourseController {
     constructor(private courseService:CourseService){}
 
     @Get()
-    @Role('USER')
+    @Role(['ALL'])
     getCourses(){
         return this.courseService.getAll()
     }
 
-    @Get('user')
-    @Role('USER')
-    getUserCourse(@GetUser() user:User){
-        return this.courseService.findByUser(user)
-    }
-
-    @Get('my')
-    @Role('TEACHER')
-    getTeacherCourses(@GetUser() user:User){
-        return this.courseService.getTeacherCourses(user)
+    @Get(':id')
+    @Role(['ALL'])
+    getCourseById(@Param('id')id:string){
+        return this.courseService.findById(id)
     }
 
     @Post()
-    @Role('TEACHER')
+    @Role(['AUTHOR'])
+    @UsePipes(new ValidationPipe())
     addCourse(@Body() addCourseDto:AddCourseDto,@GetUser() user:User){
         return this.courseService.add(addCourseDto,user)
+    }
+
+    @Delete(':id')
+    @Role(['ADMIN','AUTHOR'])
+    deleteCourse(@Param('id') id:string,@GetUser() user:User){
+        if(user.role==='ADMIN'){
+            return this.courseService.deleteById(id)
+        }else{
+            return this.courseService.deleteByIdWithTeacherCheck(id,user.id)
+        }
     }
 }

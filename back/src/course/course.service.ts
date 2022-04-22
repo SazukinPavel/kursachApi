@@ -1,28 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { OwnCourseService } from './../own-course/own-course.service';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from 'src/entitys/Course.entity';
 import { User } from 'src/entitys/User.entity';
-import { Repository } from 'typeorm';
+import {Repository } from 'typeorm';
 import { AddCourseDto } from './dto/AddCourse.dto';
 
 @Injectable()
 export class CourseService {
 
-    constructor(@InjectRepository(Course) private courseRepo:Repository<Course>){}
+    constructor(@InjectRepository(Course) private courseRepo:Repository<Course>,
+    private ownCourseService:OwnCourseService){}
 
     getAll(){
-        return this.courseRepo.find()
+        return this.courseRepo.find({relations:['authors']})
     }
 
-    findByUser(user:User){
-        return this.courseRepo.find({where:{subscribers:user}})
+    async add({name}:AddCourseDto,user:User){
+        const courseWithSameName=await this.findByName(name)
+        if(courseWithSameName){
+            throw new HttpException('Курс с таким именем уже существует',HttpStatus.BAD_REQUEST)
+        }
+        const course=this.courseRepo.create({name})
+        const savedCourse= await this.courseRepo.save(course)
+        await this.ownCourseService.addAuthorToCourse(user,savedCourse)
+        return savedCourse
     }
 
-    add(addCourseDto:AddCourseDto,user:User){
-        return this.courseRepo.save({...addCourseDto,author:user})
+    private findByName(name){
+        return this.courseRepo.findOne({name})
     }
 
-    deleteById(id:string){
+    async deleteById(id:string){
+        await this.findCourseOrThrowExeption(id)
         return this.courseRepo.delete(id)
     }
 
@@ -30,7 +40,20 @@ export class CourseService {
         return this.courseRepo.findOne(id)
     }
 
-    getTeacherCourses(user:User){
-        return this.courseRepo.find({where:{authors:user}})
+    async deleteByIdWithTeacherCheck(courseId:string,teacherId:string){
+        const course=await this.findCourseOrThrowExeption(courseId)
+        if(!course.authors.find((c)=>c.id===teacherId)){
+            throw new HttpException('Вы не можете удалить чужой курс',HttpStatus.NOT_ACCEPTABLE)
+        }
+        return this.courseRepo.delete(courseId)
     }
+
+    private async findCourseOrThrowExeption(id:string){
+        const course=await this.courseRepo.findOne(id)
+        if(!course){
+            throw new HttpException('Курс не существует',HttpStatus.NOT_FOUND)
+        }
+        return course
+    }
+
 }

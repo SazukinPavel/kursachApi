@@ -1,12 +1,21 @@
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module} from '@nestjs/common';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
+import { SubscriptionModule } from './subscription/subscribtion.module';
+import { OwnCourseModule } from './own-course/own-course.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(),UserModule, AuthModule, CourseModule],
+  imports: [
+    TypeOrmModule.forRoot(),
+    UserModule, 
+    AuthModule, 
+    CourseModule,
+    SubscriptionModule,
+    OwnCourseModule
+  ],
   controllers: [],
   providers: [],
 })

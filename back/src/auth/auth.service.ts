@@ -14,6 +14,9 @@ export class AuthService {
     constructor(private userService:UserService){}
 
     async registr({email,name,password,role}:RegistrDto){
+        if(!(role==="AUTHOR" || role==='USER')){
+            throw new HttpException('Роль может быть USER или TEACHER',HttpStatus.BAD_REQUEST)
+        }
         const userWithSameEmail=await this.userService.findByEmail(email)
         if(userWithSameEmail){
             throw new HttpException('Пользователь с таким email\'ом уже существует',HttpStatus.BAD_REQUEST)
@@ -33,10 +36,11 @@ export class AuthService {
             throw new HttpException('Пользователя с таким email\'ом или именем не существует',HttpStatus.BAD_REQUEST)
         }
         const user=userWithSameEmail ?? userWithSameName
+        console.log(user);
+        
         const isPasswordEqual=await compare(password,user.password)
         if(!isPasswordEqual){
             throw new HttpException('Неправильный пароль',HttpStatus.NOT_ACCEPTABLE)
-
         }
         return this.generateResponse(user)
     }
@@ -46,7 +50,6 @@ export class AuthService {
     }
 
     private generateResponse(user:User):UserResponse{
-        delete user.password
         return {token:this.generateToken(user),user}
     }
 

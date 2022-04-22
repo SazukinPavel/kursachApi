@@ -1,3 +1,5 @@
-export type RoleType='USER' | 'ADMIN' | 'TEACHER'
+export type RoleType='USER' | 'ADMIN' | 'AUTHOR'
 
 export const RoleKey='role'
+
+export type RoleParam=RoleType | "ALL"
