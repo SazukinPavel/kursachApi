@@ -12,7 +12,7 @@ export class Course{
     @Column({unique:true})
     name:string
 
-    @OneToMany(()=>Author,(author)=>author.course,{eager:true})
+    @OneToMany(()=>Author,(author)=>author.course)
     authors:Author[]
 
     @OneToMany(()=>Task,(task)=>task.course)

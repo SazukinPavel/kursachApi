@@ -8,9 +8,9 @@ export class Author{
     @PrimaryGeneratedColumn('uuid')
     id:string
 
-    @ManyToOne(()=>Course,course=>course.authors)
+    @ManyToOne(()=>Course,course=>course.authors,{eager:true,cascade:true,onDelete:'CASCADE',onUpdate:'CASCADE'})
     course:Course
 
-    @ManyToOne(()=>User,user=>user.ownCourses)
+    @ManyToOne(()=>User,user=>user.ownCourses,{eager:true,cascade:true,onDelete:'CASCADE',onUpdate:'CASCADE'})
     user:User
 }
