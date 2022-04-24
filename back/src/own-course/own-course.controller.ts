@@ -21,6 +21,12 @@ export class OwnCourseController {
         return this.ownCourseService.getAuthorCourse(user)
     }
 
+    @Get(':courseId')
+    @Role(['AUTHOR'])
+    getSubscribers(@Param('courseId') courseId:string,@GetUser('id') auhtorId){
+        return this.ownCourseService.getCourseSubscribers(auhtorId,courseId)
+    }
+
     @Post()
     @Role(['AUTHOR'])
     @UsePipes(new ValidationPipe())

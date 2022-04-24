@@ -42,6 +42,8 @@ export class SubscriptionService {
         }
     }
 
-    
-
+    getCourseSubscribers(courseId:string){
+        return this.subscriptionRepo.find({where:{course:courseId},relations:['user']})
+        .then((subscriptions)=>subscriptions.map((s)=>s.user))
+    }
 }
