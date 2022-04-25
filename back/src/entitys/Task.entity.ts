@@ -14,7 +14,7 @@ export class Task{
     @Column()
     description:string
 
-    @ManyToOne(()=>Course,(course)=>course.tasks)
+    @ManyToOne(()=>Course,(course)=>course.tasks,{onDelete:'CASCADE'})
     course:Course
 
     @OneToMany(()=>Solution,solution=>solution.task)

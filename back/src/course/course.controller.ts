@@ -7,13 +7,13 @@ export class CourseController {
     constructor(private courseService:CourseService){}
 
     @Get()
-    getCourses(){
-        return this.courseService.getAll()
+    async getCourses(){
+        return this.courseService.constructCoursesResponse(await this.courseService.getAll())
     }
 
     @Get(':id')
-    getCourseById(@Param('id')id:string){
-        return this.courseService.findById(id)
+    async getCourseById(@Param('id')id:string){
+        return this.courseService.constructCourseResponse(await this.courseService.findById(id))
     }
     
 }

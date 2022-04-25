@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
 import { SubscriptionModule } from './subscription/subscribtion.module';
 import { OwnCourseModule } from './own-course/own-course.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { OwnCourseModule } from './own-course/own-course.module';
     AuthModule, 
     CourseModule,
     SubscriptionModule,
-    OwnCourseModule
+    OwnCourseModule,
+    TaskModule
   ],
   controllers: [],
   providers: [],

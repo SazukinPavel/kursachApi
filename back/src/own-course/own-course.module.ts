@@ -10,6 +10,7 @@ import { OwnCourseService } from './own-course.service';
 
 @Module({
   imports:[TypeOrmModule.forFeature([Author]),CourseModule,UserModule,SubscriptionModule],
+  exports:[OwnCourseService],
   controllers: [OwnCourseController],
   providers: [OwnCourseService]
 })

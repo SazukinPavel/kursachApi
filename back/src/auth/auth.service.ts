@@ -36,8 +36,6 @@ export class AuthService {
             throw new HttpException('Пользователя с таким email\'ом или именем не существует',HttpStatus.BAD_REQUEST)
         }
         const user=userWithSameEmail ?? userWithSameName
-        console.log(user);
-        
         const isPasswordEqual=await compare(password,user.password)
         if(!isPasswordEqual){
             throw new HttpException('Неправильный пароль',HttpStatus.NOT_ACCEPTABLE)

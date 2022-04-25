@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from 'src/entitys/Course.entity';
 import {Repository } from 'typeorm';
 import { AddCourseDto } from './dto/AddCourse.dto';
+import { CourseResponseDto } from './dto/Course.response-dto';
 
 @Injectable()
 export class CourseService {
@@ -31,15 +32,27 @@ export class CourseService {
     }
 
     findById(id:string){
-        return this.courseRepo.findOne(id)
+        return this.findCourseOrThrowExeption(id)
     }
 
     async findCourseOrThrowExeption(id:string){
-        const course=await this.courseRepo.findOne(id)
+        const course=await this.courseRepo.findOne(id,{relations:['authors']})
         if(!course){
             throw new HttpException('Курс не существует',HttpStatus.NOT_FOUND)
         }
         return course
+    }
+
+    constructCoursesResponse(courses:Course[] ){
+        return courses.map(({name,authors,id}):CourseResponseDto=>{
+            const rightAuthors=authors.map((author)=>(author.user))
+            return {name,id,authors:rightAuthors}
+        })
+    }
+
+    constructCourseResponse({name,id,authors}:Course){
+        const rightAuthors=authors?.map((author)=>(author.user))
+        return {name,id,authors:rightAuthors}
     }
 
 }

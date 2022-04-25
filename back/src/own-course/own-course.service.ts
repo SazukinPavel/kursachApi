@@ -33,26 +33,20 @@ export class OwnCourseService {
 
     async deleteCourseWithAuthorCheck(authorId:string,courseId:string){
         await this.courseService.findCourseOrThrowExeption(courseId)
-        const isAuthor=await this.checkIsAuthor(authorId,courseId)
-        if(isAuthor){
-            return this.courseService.deleteById(courseId)
-        }
-        throw new HttpException('Вы не владеете этим курсом',HttpStatus.NOT_ACCEPTABLE)
+        await this.checkIsAuthor(authorId,courseId)
+        return this.courseService.deleteById(courseId)
     }
 
-    private async checkIsAuthor(authorId:string,courseId:string){
+    async checkIsAuthor(authorId:string,courseId:string){
         const authors=await this.authorRepo.find({where:{course:courseId},relations:['user']})
         if(!authors){
-            return false
+            throw new HttpException('Вы не владеете этим курсом',HttpStatus.NOT_ACCEPTABLE)
         }
-        return !!authors.find((a)=>a.user.id===authorId)
+        return !! authors.find((a)=>a.user.id===authorId)
     }
 
     async addAuthor({authorId,courseId}:AddAuthorDto){
-        const isAuthor= await this.checkIsAuthor(authorId,courseId)
-        if(!isAuthor){
-            throw new HttpException('Вы не владеете этим курсом',HttpStatus.NOT_ACCEPTABLE)
-        }
+        await this.checkIsAuthor(authorId,courseId)
         const course=await this.courseService.findCourseOrThrowExeption(courseId)
         const user=await this.userService.findById(authorId)
         if(user && user.role==='AUTHOR'){
@@ -62,10 +56,7 @@ export class OwnCourseService {
     }
 
     async getCourseSubscribers(authorId:string,courseId:string){
-        const isAuthor= await this.checkIsAuthor(authorId,courseId)
-        if(!isAuthor){
-            throw new HttpException('Вы не владеете этим курсом',HttpStatus.NOT_ACCEPTABLE)
-        }
+        await this.checkIsAuthor(authorId,courseId)
         const course=await this.courseService.findCourseOrThrowExeption(courseId)
         return this.subscriptionService.getCourseSubscribers(course.id)
     }

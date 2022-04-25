@@ -11,9 +11,9 @@ export class Solution{
     @Column()
     text:string
 
-    @ManyToOne(()=>Task,task=>task.solutions)
+    @ManyToOne(()=>Task,task=>task.solutions,{onDelete:'CASCADE'})
     task:Task
 
-    @ManyToOne(()=>User,user=>user.solutions)
+    @ManyToOne(()=>User,user=>user.solutions,{onDelete:'CASCADE'})
     owner:User
 }

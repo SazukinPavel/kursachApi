@@ -27,7 +27,7 @@ export class SubscriptionService {
         return this.subscriptionRepo.delete(subscription)
     }
 
-    private async findSubscriptionOrThrowExeption(courseId:string,user:User){
+    async findSubscriptionOrThrowExeption(courseId:string,user:User){
         const subscription=await this.subscriptionRepo.findOne({where:{course:courseId,user}})
         if(!subscription){
             throw new HttpException('Такой подписки нет',HttpStatus.NOT_FOUND)
