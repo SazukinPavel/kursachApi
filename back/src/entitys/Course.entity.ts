@@ -1,6 +1,6 @@
 import { Author } from './Author.entity';
 import { Subscription } from './Subscription.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Task } from "./Task.entity";
 
 @Entity('courses')
@@ -12,6 +12,9 @@ export class Course{
     @Column({unique:true})
     name:string
 
+    @Column()
+    description:string
+
     @OneToMany(()=>Author,(author)=>author.course)
     authors:Author[]
 
@@ -20,4 +23,8 @@ export class Course{
 
     @OneToMany(()=>Subscription,subscription=>subscription.course)
     subscribers:Subscription[]
+
+    @CreateDateColumn()
+    createdAt:Date
+
 }

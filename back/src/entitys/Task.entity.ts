@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Course } from "./Course.entity";
 import { Solution } from "./Solution.entity";
 
@@ -9,7 +9,7 @@ export class Task{
     id:string
 
     @Column()
-    name:string
+    title:string
 
     @Column()
     description:string
@@ -19,4 +19,8 @@ export class Task{
 
     @OneToMany(()=>Solution,solution=>solution.task)
     solutions:Solution[]
+
+    @CreateDateColumn()
+    createdAt:Date
+
 }

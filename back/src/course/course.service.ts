@@ -14,12 +14,12 @@ export class CourseService {
         return this.courseRepo.find({relations:['authors']})
     }
 
-    async add({name}:AddCourseDto){
+    async add({name,description}:AddCourseDto){
         const courseWithSameName=await this.findByName(name)
         if(courseWithSameName){
             throw new HttpException('Курс с таким именем уже существует',HttpStatus.BAD_REQUEST)
         }
-        const course=this.courseRepo.create({name})
+        const course=this.courseRepo.create({name,description})
         return this.courseRepo.save(course)
     }
 

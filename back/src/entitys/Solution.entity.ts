@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Task } from "./Task.entity";
 import { User } from "./User.entity";
 
@@ -16,4 +16,8 @@ export class Solution{
 
     @ManyToOne(()=>User,user=>user.solutions,{onDelete:'CASCADE'})
     owner:User
+
+    @CreateDateColumn()
+    createdAt:Date
+
 }

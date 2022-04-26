@@ -37,10 +37,10 @@ export class TaskService {
         return this.taskRepository.delete(user)
     }
 
-    async updateTask({taskId,name,description}:UpdateTaskDto,author:User){
+    async updateTask({taskId,title,description}:UpdateTaskDto,author:User){
         const task=await this.findTaskOrThrowExeption(taskId)
         await this.ownCourseService.checkIsAuthor(author.id,task.course.id)
-        return this.taskRepository.update(task.id,{name,description})
+        return this.taskRepository.update(task.id,{title,description})
     }
 
     private async findTaskOrThrowExeption(id:string){

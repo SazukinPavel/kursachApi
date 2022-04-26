@@ -6,7 +6,7 @@ export class UpdateTaskDto{
     taskId
 
     @IsNotEmpty()
-    name:string
+    title:string
 
     @IsNotEmpty()
     description:string
