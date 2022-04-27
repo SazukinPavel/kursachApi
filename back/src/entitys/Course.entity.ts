@@ -15,7 +15,7 @@ export class Course{
     @Column()
     description:string
 
-    @OneToMany(()=>Author,(author)=>author.course)
+    @OneToMany(()=>Author,(author)=>author.course,{eager:true})
     authors:Author[]
 
     @OneToMany(()=>Task,(task)=>task.course)

@@ -1,20 +1,22 @@
-import { Injectable, UseGuards } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthorBio } from 'src/entitys/AuthorBio.entity';
 import { User } from 'src/entitys/User.entity';
 import { Repository } from 'typeorm';
 import { AddUserDto } from './dto/AddUser.dto';
-import { UpdateUserDto } from './dto/UpdateUser.dto';
+import { UpdateAuthorDto } from './dto/UpdateAuthor.dto';
 
 @Injectable()
 export class UserService {
 
-    constructor(@InjectRepository(User) private userRepo:Repository<User>){}
+    constructor(@InjectRepository(User) private userRepo:Repository<User>,
+    @InjectRepository(AuthorBio) private authorBioRepo:Repository<AuthorBio>){}
 
     add(addUserDto:AddUserDto){
         return this.userRepo.save(addUserDto)
     }
 
-    findByName(name:string,selectPassword=false){
+    findByName(name:string){
         return this.userRepo.findOne({where:{name}})
     }
 
@@ -34,11 +36,19 @@ export class UserService {
         return this.userRepo.find()
     }
 
-    update({id,...dto}:UpdateUserDto){
-        return this.userRepo.update(id,{...dto})
-    }
-
     deleteById(id){
         return this.userRepo.delete(id)
+    }
+
+    updateAuthor(updateAuthorDto:UpdateAuthorDto,author:User){
+        return this.updateOrCreateAuthorBio(updateAuthorDto,author)
+    }
+
+    private async updateOrCreateAuthorBio(updateAuthorDto:UpdateAuthorDto,user:User){
+        const bio=await this.authorBioRepo.findOne({where:{user}})
+        if(!bio){
+            return this.authorBioRepo.update(bio.id,{bio:updateAuthorDto.bio})
+        }
+        return this.authorBioRepo.save({...updateAuthorDto})
     }
 }

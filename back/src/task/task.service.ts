@@ -53,10 +53,9 @@ export class TaskService {
     
     async getUserTask(user:User){
         const courses=await this.subscriptionService.getByUser(user)
-        .then(subs=>subs.map(s=>s.course))
         const tasks:Task[]=[]
         await Promise.all(courses.map(async (course)=>{
-            const courseTasks=await this.taskRepository.find({where:{course}})
+            const courseTasks=await this.taskRepository.find({where:{course:course.id}})
             tasks.push(...courseTasks)
         }))
         return tasks

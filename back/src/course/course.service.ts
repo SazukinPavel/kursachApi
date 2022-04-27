@@ -11,7 +11,7 @@ export class CourseService {
     constructor(@InjectRepository(Course) private courseRepo:Repository<Course>){}
 
     getAll(){
-        return this.courseRepo.find({relations:['authors']})
+        return this.courseRepo.find()
     }
 
     async add({name,description}:AddCourseDto){
@@ -36,7 +36,7 @@ export class CourseService {
     }
 
     async findCourseOrThrowExeption(id:string){
-        const course=await this.courseRepo.findOne(id,{relations:['authors']})
+        const course=await this.courseRepo.findOne(id)
         if(!course){
             throw new HttpException('Курс не существует',HttpStatus.NOT_FOUND)
         }
@@ -44,15 +44,15 @@ export class CourseService {
     }
 
     constructCoursesResponse(courses:Course[] ){
-        return courses.map(({name,authors,id}):CourseResponseDto=>{
-            const rightAuthors=authors.map((author)=>(author.user))
-            return {name,id,authors:rightAuthors}
+        return courses.map(({name,authors,id,description}):CourseResponseDto=>{
+            const rightAuthors=authors.map(author=>author.user)
+            return {name,id,authors:rightAuthors,description}
         })
     }
 
-    constructCourseResponse({name,id,authors}:Course){
-        const rightAuthors=authors?.map((author)=>(author.user))
-        return {name,id,authors:rightAuthors}
+    constructCourseResponse({name,id,authors,description}:Course){        
+        const rightAuthors=authors.map((author)=>(author.user))
+        return {name,id,authors:rightAuthors,description}
     }
 
 }

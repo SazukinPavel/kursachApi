@@ -12,8 +12,9 @@ export class SubscriptionService {
     constructor(@InjectRepository(Subscription) private subscriptionRepo:Repository<Subscription>,
     private courseService:CourseService){}
 
-    getByUser(user:User){
-        return this.subscriptionRepo.find({where:{user},relations:['course','user']}) 
+    async getByUser(user:User){
+        const subscriptions=await this.subscriptionRepo.find({where:{user},relations:['course']})
+        return this.courseService.constructCoursesResponse(subscriptions.map((s)=>s.course))
     }
 
     async add({courseId}:AddSubscribtionDto,user:User){
@@ -33,6 +34,10 @@ export class SubscriptionService {
             throw new HttpException('Такой подписки нет',HttpStatus.NOT_FOUND)
         }
         return subscription
+    }
+
+    findSubscriptionByCourseIdAndUser(courseId:string,user:User){
+        return this.subscriptionRepo.findOne({where:{user,course:courseId}})
     }
 
     private async throwIfSubscriptionExist(courseId:string,user:User){

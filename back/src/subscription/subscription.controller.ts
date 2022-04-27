@@ -18,6 +18,12 @@ export class SubscriptionController {
         return this.subscriptionService.getByUser(user)
     }
 
+    @Get(':courseId')
+    @Role(['USER'])
+    async findSubscribeByCourseId(@Param('courseId') courseId:string,@GetUser() user:User){
+        return (await this.subscriptionService.findSubscriptionByCourseIdAndUser(courseId,user))!=null?true:false
+    }
+
     @Post()
     @Role(['USER'])
     @UsePipes(new ValidationPipe())
@@ -27,8 +33,8 @@ export class SubscriptionController {
 
     @Delete(':id')
     @Role(['USER'])
-    unsubscribeCourse(@Param('id') courseId:string,@GetUser() user:User){
-        return this.subscriptionService.delete(courseId,user)
+    async unsubscribeCourse(@Param('id') courseId:string,@GetUser() user:User):Promise<boolean>{
+        return !!(await this.subscriptionService.delete(courseId,user))
     }
 
 }

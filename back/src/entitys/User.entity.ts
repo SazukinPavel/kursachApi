@@ -1,9 +1,10 @@
 import { Author} from './Author.entity';
 import { RoleType } from "src/types/RoleType";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Solution } from "./Solution.entity";
 import { Subscription } from "./Subscription.entity";
 import { Exclude } from 'class-transformer';
+import { AuthorBio } from './AuthorBio.entity';
 
 @Entity('users')
 export class User{
@@ -29,6 +30,9 @@ export class User{
 
     @OneToMany(()=>Solution,solution=>solution.owner)
     solutions:Solution[]
+
+    @OneToOne(()=>AuthorBio,(authorBio)=>authorBio.bio)
+    bio:AuthorBio
     
     @OneToMany(()=>Subscription,subscription=>subscription.user)
     subscriptions:Subscription[]

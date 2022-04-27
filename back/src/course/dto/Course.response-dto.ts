@@ -5,4 +5,5 @@ export class CourseResponseDto{
     id:string
     name:string
     authors:User[]
+    description:string
 }

@@ -17,4 +17,5 @@ export class RegistrDto{
     @IsNotEmpty()
     role:'USER' | 'AUTHOR'
 
+    bio:string
 }
