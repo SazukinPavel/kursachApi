@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from 'src/entitys/Course.entity';
 import {Repository } from 'typeorm';
 import { AddCourseDto } from './dto/AddCourse.dto';
-import { CourseResponseDto } from './dto/Course.response-dto';
 
 @Injectable()
 export class CourseService {
@@ -42,17 +41,4 @@ export class CourseService {
         }
         return course
     }
-
-    constructCoursesResponse(courses:Course[] ){
-        return courses.map(({name,authors,id,description}):CourseResponseDto=>{
-            const rightAuthors=authors.map(author=>author.user)
-            return {name,id,authors:rightAuthors,description}
-        })
-    }
-
-    constructCourseResponse({name,id,authors,description}:Course){        
-        const rightAuthors=authors.map((author)=>(author.user))
-        return {name,id,authors:rightAuthors,description}
-    }
-
 }

@@ -14,7 +14,7 @@ export class SubscriptionService {
 
     async getByUser(user:User){
         const subscriptions=await this.subscriptionRepo.find({where:{user},relations:['course']})
-        return this.courseService.constructCoursesResponse(subscriptions.map((s)=>s.course))
+        return subscriptions.map((s)=>s.course)
     }
 
     async add({courseId}:AddSubscribtionDto,user:User){

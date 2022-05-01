@@ -7,6 +7,9 @@ import { CourseModule } from './course/course.module';
 import { SubscriptionModule } from './subscription/subscribtion.module';
 import { OwnCourseModule } from './own-course/own-course.module';
 import { TaskModule } from './task/task.module';
+import { ResponseConstructorService } from './response-constructor/response-constructor.service';
+import { AuthorsModule } from './authors/authors.module';
+import { ResponseConstructorModule } from './response-constructor/response-constructor.module';
 
 @Module({
   imports: [
@@ -16,8 +19,11 @@ import { TaskModule } from './task/task.module';
     CourseModule,
     SubscriptionModule,
     OwnCourseModule,
-    TaskModule
+    TaskModule,
+    AuthorsModule,
+    ResponseConstructorModule
   ],
+  exports:[],
   controllers: [],
   providers: [],
 })

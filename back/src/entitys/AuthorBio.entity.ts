@@ -1,7 +1,7 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User.entity';
 
-@Entity('authors')
+@Entity('authorsBio')
 export class AuthorBio{
 
     @PrimaryGeneratedColumn('uuid')
@@ -11,5 +11,6 @@ export class AuthorBio{
     bio:string
 
     @OneToOne(()=>User,user=>user.bio)
+    @JoinColumn()
     user:User
 }

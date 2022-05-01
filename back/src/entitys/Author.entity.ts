@@ -1,7 +1,6 @@
 import { User } from 'src/entitys/User.entity';
 import { Course } from 'src/entitys/Course.entity';
-import {Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { AuthorBio } from './AuthorBio.entity';
+import {Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('authors')
 export class Author{

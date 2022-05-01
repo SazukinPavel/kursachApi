@@ -1,6 +1,6 @@
 import { Author} from './Author.entity';
 import { RoleType } from "src/types/RoleType";
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Solution } from "./Solution.entity";
 import { Subscription } from "./Subscription.entity";
 import { Exclude } from 'class-transformer';

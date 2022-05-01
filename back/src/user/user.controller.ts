@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Put, UseGuards} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UsePipes, ValidationPipe} from '@nestjs/common';
 import { Role } from 'src/decorators/Role.decorator';
 import { GetUser } from 'src/decorators/User.decorator';
 import { User } from 'src/entitys/User.entity';
 import { RoleGuard } from 'src/guards/role.guard';
-import { UpdateAuthorDto } from './dto/UpdateAuthor.dto';
+import { AddUserDto } from './dto/AddUser.dto';
+import { UpdateUserDto } from './dto/UpdateUser.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -25,15 +26,23 @@ export class UserController {
     }
 
     @Delete('id')
-    @UseGuards(RoleGuard)
     @Role(["ADMIN"])
     deleteUserById(@Param('id') id:string){
         return this.userService.deleteById(id)
     }
 
     @Put()
-    @Role(['AUTHOR'])
-    updateAuthor(@Body() updateAuthorDto:UpdateAuthorDto,@GetUser() user:User){
-        return this.userService.updateAuthor(updateAuthorDto,user)
-    }    
+    @Role(['ADMIN'])
+    @UsePipes(new ValidationPipe())
+    updateAuthor(@Body() updateUserDto:UpdateUserDto,@GetUser() user:User){
+        return this.userService.updateUser(updateUserDto,user)
+    }  
+    
+    @Post()
+    @Role(["ADMIN"])
+    @UsePipes(new ValidationPipe())
+    addUser(@Body() addUserDto:AddUserDto){
+        return this.userService.add(addUserDto)
+    }
+
 }

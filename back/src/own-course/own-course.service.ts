@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Author } from 'src/entitys/Author.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/entitys/User.entity';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class OwnCourseService {
@@ -18,12 +19,14 @@ export class OwnCourseService {
     private userService:UserService,
     private subscriptionService:SubscriptionService){}
 
-    getAuthorCourse(author:User){
-        return this.authorRepo.find({where:{user:author},relations:['course']})
+    async getAuthorCourse(author:User){
+        const authorInfo=await  this.authorRepo.find({where:{user:author},relations:['course']})
+        return authorInfo.map((author)=>author.course)
     }
 
     private addAuthorToCourse(author:User,course:Course){
-        return this.authorRepo.save({user:author,course})
+        const authorEntity=this.authorRepo.create({user:author,course,id:v4()})
+        return this.authorRepo.save(authorEntity)
     }
 
     async addCourse(author:User,addCourseDto:AddCourseDto){

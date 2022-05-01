@@ -7,18 +7,20 @@ import { Role } from 'src/decorators/Role.decorator';
 import { RoleGuard } from 'src/guards/role.guard';
 import { GetUser } from 'src/decorators/User.decorator';
 import { AddCourseDto } from 'src/course/dto/AddCourse.dto';
+import { ResponseConstructorService } from 'src/response-constructor/response-constructor.service';
 
 @Controller('own-courses')
 @UseGuards(RoleGuard)
 export class OwnCourseController {
-
+    
     constructor(private ownCourseService:OwnCourseService,
-        private courseService:CourseService){}
+        private courseService:CourseService,
+        private responseConstructorService:ResponseConstructorService){}
 
     @Get()
     @Role(['AUTHOR'])
-    getOwnCourse(@GetUser() user:User){
-        return this.ownCourseService.getAuthorCourse(user)
+    async getOwnCourses(@GetUser() user:User){
+        return this.responseConstructorService.constructCoursesResponse(await this.ownCourseService.getAuthorCourse(user))
     }
 
     @Get(':courseId')

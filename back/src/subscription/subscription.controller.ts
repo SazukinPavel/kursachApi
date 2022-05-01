@@ -5,17 +5,21 @@ import { Body, Controller, Delete, Get, Param, Post, UseGuards, UsePipes, Valida
 import { Role } from 'src/decorators/Role.decorator';
 import { GetUser } from 'src/decorators/User.decorator';
 import { AddSubscribtionDto } from './dto/AddSubscribtion.dto';
+import { ResponseConstructorService } from 'src/response-constructor/response-constructor.service';
 
 @Controller('subscriptions')
 @UseGuards(RoleGuard)
 export class SubscriptionController {
 
-    constructor(private subscriptionService:SubscriptionService){}
+    constructor(private subscriptionService:SubscriptionService,
+        private responseConstructorService:ResponseConstructorService){}
 
     @Get()
     @Role(['USER'])
-    getSubscriptions(@GetUser() user){
-        return this.subscriptionService.getByUser(user)
+    async getSubscriptions(@GetUser() user){
+        return this.responseConstructorService.constructCoursesResponse(
+            await this.subscriptionService.getByUser(user)
+        )
     }
 
     @Get(':courseId')
