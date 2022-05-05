@@ -8,7 +8,7 @@ export class Subscription{
     @PrimaryGeneratedColumn('uuid')
     id:string
 
-    @ManyToOne(()=>Course,course=>course.subscribers)
+    @ManyToOne(()=>Course,course=>course.subscribers,{onDelete:'CASCADE'})
     course:Course
 
     @ManyToOne(()=>User,user=>user.subscriptions)

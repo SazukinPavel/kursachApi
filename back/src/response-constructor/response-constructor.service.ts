@@ -1,9 +1,13 @@
 import { Injectable} from '@nestjs/common';
 import { Course } from 'src/entitys/Course.entity';
+import { Task } from 'src/entitys/Task.entity';
 import { User } from 'src/entitys/User.entity';
-import { AuthorResponse } from 'src/types/AuthorResponse';
+import { AuthorResponse } from 'src/types/ReponseTypes/AuthorResponse';
 import { CourseInfo } from 'src/types/CourseInfo';
-import { CourseResponseDto } from 'src/types/CourseResponse';
+import { CourseResponseDto } from 'src/types/ReponseTypes/CourseResponse';
+import { TaskResponse } from 'src/types/ReponseTypes/TaskResponse';
+import { Solution } from 'src/entitys/Solution.entity';
+import { SolutionResponse } from 'src/types/ReponseTypes/SolutionResponse';
 
 @Injectable()
 export class ResponseConstructorService {
@@ -19,8 +23,8 @@ export class ResponseConstructorService {
         return {name,id,authors:rightAuthors,description}
     }
 
-    construcCourseInfo({name,id,description}:Course):CourseInfo{
-        return {name,id,description}
+    construcCourseInfo(course:Course):CourseInfo{
+        return {...course}
     }
 
     constructAuthorResponse(user:User,courses:Course[]){
@@ -35,4 +39,17 @@ export class ResponseConstructorService {
         return authorResponse
     }
 
+    cronstructTaskResponse(task:Task):TaskResponse{
+        const course=this.construcCourseInfo(task.course)
+        return {...task,course}
+    }
+
+    constructSolutionResponse(solution:Solution):SolutionResponse{
+        const task=this.cronstructTaskResponse(solution.task)
+        return {...solution,task}
+    }
+
+    constructSolutionsResponse(solutions:Solution[]):SolutionResponse[]{
+        return solutions.map((s)=>this.constructSolutionResponse(s))
+    }
 }

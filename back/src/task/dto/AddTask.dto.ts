@@ -5,7 +5,7 @@ export class AddTaskDto{
     courseId:string
 
     @IsNotEmpty()
-    name:string
+    title:string
 
     @IsNotEmpty()
     description:string

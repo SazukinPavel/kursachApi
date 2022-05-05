@@ -1,4 +1,4 @@
-import { CourseInfo } from "./CourseInfo"
+import { CourseInfo } from "../CourseInfo"
 
 export class AuthorResponse{
 

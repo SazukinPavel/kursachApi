@@ -10,6 +10,7 @@ import { TaskModule } from './task/task.module';
 import { ResponseConstructorService } from './response-constructor/response-constructor.service';
 import { AuthorsModule } from './authors/authors.module';
 import { ResponseConstructorModule } from './response-constructor/response-constructor.module';
+import { SolutionModule } from './solution/solution.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { ResponseConstructorModule } from './response-constructor/response-const
     OwnCourseModule,
     TaskModule,
     AuthorsModule,
-    ResponseConstructorModule
+    ResponseConstructorModule,
+    SolutionModule
   ],
   exports:[],
   controllers: [],

@@ -28,4 +28,9 @@ export class AuthController {
     checkToken(@GetUser() user:User){
         return user
     }
+
+    @Get('connection')
+    checkConnection(){
+        return true
+    }
 }

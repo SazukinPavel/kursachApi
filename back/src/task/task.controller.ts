@@ -14,8 +14,11 @@ export class TaskController {
     constructor(private taskService:TaskService){}
 
     @Get()
-    @Role(['USER'])
+    @Role(['USER','AUTHOR'])
     getTasks(@GetUser() user:User){
+        if(user.role==='AUTHOR'){
+            return this.taskService.getAuthorTask(user)
+        }
         return this.taskService.getUserTask(user)
     }    
 
@@ -35,18 +38,17 @@ export class TaskController {
     @Put()
     @Role(['AUTHOR'])
     @UsePipes(new ValidationPipe())
-    updateTask(@Body() updateTaskDto:UpdateTaskDto,@GetUser() user:User){
-        return this.taskService.updateTask(updateTaskDto,user)
+    async updateTask(@Body() updateTaskDto:UpdateTaskDto,@GetUser() user:User){
+        return !!await this.taskService.updateTask(updateTaskDto,user)
     }
 
     @Delete(':taskId')
     @Role(['ADMIN','AUTHOR'])
-    deleteTaskById(@Param('taskId') taskId:string,@GetUser() user:User){
+    async deleteTaskById(@Param('taskId') taskId:string,@GetUser() user:User){
         if(user.role==='ADMIN'){
-            return this.taskService.deleteById(taskId)
+            return !!await this.taskService.deleteById(taskId)
         }else{
-            return this.taskService.deleteByIdWithUserCheck(taskId,user)
+            return !!await this.taskService.deleteByIdWithUserCheck(taskId,user)
         }
     }
-
 }

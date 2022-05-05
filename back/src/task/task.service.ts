@@ -17,24 +17,32 @@ export class TaskService {
     private ownCourseService:OwnCourseService,
     private subscriptionService:SubscriptionService){}
 
-    async add({courseId,name,description}:AddTaskDto,user:User){
+    async add({courseId,title,description}:AddTaskDto,user:User){
         const course=await this.courseService.findCourseOrThrowExeption(courseId)   
         const isAuthor=await this.ownCourseService.checkIsAuthor(user.id,course.id)        
         if(!isAuthor){
             throw new HttpException('Вы не владелец этого курса',HttpStatus.NOT_ACCEPTABLE)
         }
-        return this.taskRepository.save({course,name,description})
+        return this.taskRepository.save({course,title,description})
     }
 
-    async deleteById(id:string){
-        const course=await this.courseService.findCourseOrThrowExeption(id)
-        return this.taskRepository.delete(course)
+    async findTaskByIdOrTrowExeption(taskId:string){
+        const task=await this.taskRepository.findOne(taskId)
+        if(!task){
+            throw new HttpException('Такой задачи не существует',HttpStatus.BAD_REQUEST)
+        }
+        return task
     }
 
-    async deleteByIdWithUserCheck(id:string,user:User){
-        const course=await this.courseService.findCourseOrThrowExeption(id)
-        await this.ownCourseService.checkIsAuthor(user.id,course.id)
-        return this.taskRepository.delete(user)
+    async deleteById(taskId:string){
+        const task=await this.findTaskOrThrowExeption(taskId)
+        return this.taskRepository.delete(task.id)
+    }
+
+    async deleteByIdWithUserCheck(taskId:string,user:User){
+        const task=await this.findTaskOrThrowExeption(taskId)
+        await this.ownCourseService.checkIsAuthor(user.id,task.course.id)
+        return this.taskRepository.delete(task.id)
     }
 
     async updateTask({taskId,title,description}:UpdateTaskDto,author:User){
@@ -55,7 +63,17 @@ export class TaskService {
         const courses=await this.subscriptionService.getByUser(user)
         const tasks:Task[]=[]
         await Promise.all(courses.map(async (course)=>{
-            const courseTasks=await this.taskRepository.find({where:{course:course.id}})
+            const courseTasks=await this.taskRepository.find({where:{course:course.id},relations:['course']})
+            tasks.push(...courseTasks)
+        }))
+        return tasks
+    }
+
+    async getAuthorTask(author:User){
+        const courses=await this.ownCourseService.getAuthorCourse(author)
+        const tasks:Task[]=[]
+        await Promise.all(courses.map(async (course)=>{
+            const courseTasks=await this.taskRepository.find({where:{course:course.id},relations:['course']})
             tasks.push(...courseTasks)
         }))
         return tasks
