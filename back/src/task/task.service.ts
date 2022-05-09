@@ -8,6 +8,7 @@ import { Task } from './../entitys/Task.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { TaskUserResponse } from 'src/types/ReponseTypes/TaskUserResponse';
 
 @Injectable()
 export class TaskService {
@@ -15,7 +16,7 @@ export class TaskService {
     constructor(@InjectRepository(Task) private taskRepository:Repository<Task>,
     private courseService:CourseService,
     private ownCourseService:OwnCourseService,
-    private subscriptionService:SubscriptionService){}
+    private subscriptionService:SubscriptionService,){}
 
     async add({courseId,title,description}:AddTaskDto,user:User){
         const course=await this.courseService.findCourseOrThrowExeption(courseId)   
@@ -61,12 +62,16 @@ export class TaskService {
     
     async getUserTask(user:User){
         const courses=await this.subscriptionService.getByUser(user)
-        const tasks:Task[]=[]
+        const tasks:TaskUserResponse[]=[]
         await Promise.all(courses.map(async (course)=>{
-            const courseTasks=await this.taskRepository.find({where:{course:course.id},relations:['course']})
-            tasks.push(...courseTasks)
+            const courseTasks=await this.taskRepository.find({where:{course},relations:['course','solutions']});
+            const t:TaskUserResponse[]= courseTasks.map((t)=>{
+                const isHaveSolution=!!t.solutions.find((t)=>t.owner.id===user.id)
+                return {...t,isHaveSolution}
+            })
+            tasks.push(...t)
         }))
-        return tasks
+        return tasks.sort((a,b)=>+b.createdAt-+a.createdAt)
     }
 
     async getAuthorTask(author:User){
@@ -76,7 +81,7 @@ export class TaskService {
             const courseTasks=await this.taskRepository.find({where:{course:course.id},relations:['course']})
             tasks.push(...courseTasks)
         }))
-        return tasks
+        return tasks.sort((a,b)=>+b.createdAt-+a.createdAt)
     }
     
     async getTaskByCourse(courseId:string,user:User){

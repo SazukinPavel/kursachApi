@@ -5,6 +5,7 @@ import { Solution } from "./Solution.entity";
 import { Subscription } from "./Subscription.entity";
 import { Exclude } from 'class-transformer';
 import { AuthorBio } from './AuthorBio.entity';
+import { Review } from './Review.entity';
 
 @Entity('users')
 export class User{
@@ -36,4 +37,7 @@ export class User{
     
     @OneToMany(()=>Subscription,subscription=>subscription.user)
     subscriptions:Subscription[]
+
+    @OneToMany(()=>Review,review=>review.owner)
+    reviews:Review[]
 }

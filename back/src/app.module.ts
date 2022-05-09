@@ -11,6 +11,7 @@ import { ResponseConstructorService } from './response-constructor/response-cons
 import { AuthorsModule } from './authors/authors.module';
 import { ResponseConstructorModule } from './response-constructor/response-constructor.module';
 import { SolutionModule } from './solution/solution.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { SolutionModule } from './solution/solution.module';
     TaskModule,
     AuthorsModule,
     ResponseConstructorModule,
-    SolutionModule
+    SolutionModule,
+    ReviewsModule
   ],
   exports:[],
   controllers: [],

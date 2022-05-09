@@ -6,12 +6,14 @@ import { Controller, Get, UseGuards, Param, Delete, Post, Put, UsePipes, Validat
 import { Role } from 'src/decorators/Role.decorator';
 import { AddTaskDto } from './dto/AddTask.dto';
 import { GetUser } from 'src/decorators/User.decorator';
+import { ResponseConstructorService } from 'src/response-constructor/response-constructor.service';
 
 @Controller('tasks')
 @UseGuards(RoleGuard)
 export class TaskController {
 
-    constructor(private taskService:TaskService){}
+    constructor(private taskService:TaskService,
+        private responseConstructor:ResponseConstructorService){}
 
     @Get()
     @Role(['USER','AUTHOR'])

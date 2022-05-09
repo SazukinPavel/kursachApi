@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Role } from 'src/decorators/Role.decorator';
 import { GetUser } from 'src/decorators/User.decorator';
 import { User } from 'src/entitys/User.entity';
@@ -20,16 +20,25 @@ export class SolutionController {
     async getAllSolutions(@GetUser() user:User){
         if(user.role==='AUTHOR'){
             return this.responseConstructorService
-            .constructSolutionsResponse(await this.soltionService.getAuthorSolutions(user))
+                .constructAuthorSolutionsResponse(await this.soltionService.getAuthorSolutions(user))
         }
         return this.responseConstructorService
             .constructSolutionsResponse(await this.soltionService.getUserSolutions(user))
     }
 
+    @Get(':taskId')
+    @Role(['USER','AUTHOR'])
+    async getSolutionByTask(@Param('taskId') taskId:string,@GetUser() user:User){
+        return this.responseConstructorService.constructSolutionResponse(
+            await this.soltionService.getSolutionByTaskAndUser(taskId,user)
+        )
+    }
+
     @Post()
     @Role(['USER'])
-    addSolution(@Body() addSolutionDto:AddSolutionDto,@GetUser() user:User){
-        return this.soltionService.add(addSolutionDto,user)
+    @UsePipes(new ValidationPipe())
+    async addSolution(@Body() addSolutionDto:AddSolutionDto,@GetUser() user:User){
+        return !!await this.soltionService.add(addSolutionDto,user)
     }
 
     @Delete(':solutionId')
@@ -40,6 +49,7 @@ export class SolutionController {
 
     @Put()
     @Role(['USER'])
+    @UsePipes(new ValidationPipe())
     async updateSolution(@GetUser() user:User,@Body() updateSolutionDto:UpdateSolutionDto){
         return !!await this.soltionService.updateSolution(updateSolutionDto,user)
     }

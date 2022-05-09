@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Review } from "./Review.entity";
 import { Task } from "./Task.entity";
 import { User } from "./User.entity";
@@ -12,14 +12,14 @@ export class Solution{
     @Column()
     text:string
 
-    @ManyToOne(()=>Task,task=>task.solutions,{onDelete:'CASCADE'})
+    @ManyToOne(()=>Task,task=>task.solutions,{onDelete:'CASCADE',eager:true})
     task:Task
 
-    @ManyToOne(()=>User,user=>user.solutions,{onDelete:'CASCADE'})
+    @ManyToOne(()=>User,user=>user.solutions,{onDelete:'CASCADE',eager:true})
     owner:User
 
-    @OneToMany(()=>Review,review=>review.solution)
-    reviews:Review[]
+    @OneToOne(()=>Review,review=>review.solution)
+    review:Review
 
     @CreateDateColumn()
     createdAt:Date

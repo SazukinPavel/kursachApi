@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Solution } from "./Solution.entity";
+import { User } from "./User.entity";
 
 @Entity('rewievs')
 export class Review{
@@ -13,6 +14,10 @@ export class Review{
     @CreateDateColumn()
     createdAt:Date
 
-    @ManyToOne(()=>Solution,solution=>solution.reviews)
+    @OneToOne(()=>Solution,solution=>solution.review,{eager:true,onDelete:'CASCADE'})
+    @JoinColumn({name:'solutionId'})
     solution:Solution
+
+    @ManyToOne(()=>User,user=>user.reviews)
+    owner:User
 }

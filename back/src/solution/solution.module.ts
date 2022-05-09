@@ -8,6 +8,7 @@ import { SolutionService } from './solution.service';
 
 @Module({
   imports:[TypeOrmModule.forFeature([Solution]),ResponseConstructorModule,TaskModule],
+  exports:[SolutionService],
   controllers: [SolutionController],
   providers: [SolutionService]
 })

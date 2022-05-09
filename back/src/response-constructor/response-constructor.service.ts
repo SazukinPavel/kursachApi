@@ -5,9 +5,14 @@ import { User } from 'src/entitys/User.entity';
 import { AuthorResponse } from 'src/types/ReponseTypes/AuthorResponse';
 import { CourseInfo } from 'src/types/CourseInfo';
 import { CourseResponseDto } from 'src/types/ReponseTypes/CourseResponse';
-import { TaskResponse } from 'src/types/ReponseTypes/TaskResponse';
 import { Solution } from 'src/entitys/Solution.entity';
 import { SolutionResponse } from 'src/types/ReponseTypes/SolutionResponse';
+import { TaskResponse } from 'src/types/ReponseTypes/TaskResponse';
+import { TaskAuthorResponse } from 'src/types/ReponseTypes/TaskAuthorResponse';
+import { TaskUserResponse } from 'src/types/ReponseTypes/TaskUserResponse';
+import { Review } from 'src/entitys/Review.entity';
+import { ReviewResponse } from 'src/types/ReponseTypes/ReviewResponse';
+import { AuthorSolutionResponse } from 'src/types/ReponseTypes/AuthorSolutionResponse';
 
 @Injectable()
 export class ResponseConstructorService {
@@ -39,17 +44,48 @@ export class ResponseConstructorService {
         return authorResponse
     }
 
-    cronstructTaskResponse(task:Task):TaskResponse{
-        const course=this.construcCourseInfo(task.course)
+    constructTaskUserResponse(task:Task & {isHaveSolution:boolean}):TaskUserResponse{
+        return {...this.constructTaskResponse(task),isHaveSolution:task.isHaveSolution}
+    }
+
+    constructTaskResponse(task:Task):TaskResponse{
+        const course=this.construcCourseInfo(task?.course)
         return {...task,course}
     }
 
+    constructTaskAuthorResponse(task:Task):TaskAuthorResponse{
+        return {...this.constructTaskResponse(task)}
+    }
+
     constructSolutionResponse(solution:Solution):SolutionResponse{
-        const task=this.cronstructTaskResponse(solution.task)
+        const task=this.constructTaskResponse(solution?.task)
         return {...solution,task}
+    }
+
+    constructAuthorSolutionResponse(solution:Solution):AuthorSolutionResponse{
+        let review=undefined
+        if(solution.review){
+            review=this.constructReviewResponse(solution?.review)
+        }
+        return {...this.constructSolutionResponse(solution),isHaveReview:review!==undefined,review}
     }
 
     constructSolutionsResponse(solutions:Solution[]):SolutionResponse[]{
         return solutions.map((s)=>this.constructSolutionResponse(s))
     }
+    
+    constructAuthorSolutionsResponse(solutions:Solution[]):AuthorSolutionResponse[]{
+        return solutions.map((s)=>this.constructAuthorSolutionResponse(s))
+    }
+
+    constructReviewResponse(review:Review):ReviewResponse{
+        const solution=this.constructSolutionResponse(review?.solution)
+        return {...review,solution}
+    }
+
+    constructReviewsResponse(reviews:Review[]):ReviewResponse[]{
+        return reviews.map((r)=>this.constructReviewResponse(r))
+    }
+
+    
 }
