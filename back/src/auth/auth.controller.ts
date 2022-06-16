@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { GetUser } from 'src/decorators/User.decorator';
 import { User } from 'src/entitys/User.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
@@ -33,4 +33,10 @@ export class AuthController {
     checkConnection(){
         return true
     }
+
+    @Get('confirm')
+    confirmEmail(@Query('token') token:string){
+        return this.authService.confirmEmail(token)
+    }
+
 }

@@ -13,9 +13,9 @@ export class ReviewsService {
     constructor(@InjectRepository(Review) private reviewRepo:Repository<Review>,
     private solutionService:SolutionService){}
 
-    async add({solutionId,text}:AddReviewDto,author:User){
+    async add({solutionId,text,isRight}:AddReviewDto,author:User){
         const solution=await this.solutionService.findSolutionByIdOrThrowExeption(solutionId)
-        const review=this.reviewRepo.create({solution,text,owner:author})
+        const review=this.reviewRepo.create({solution,text,owner:author,isRight})
         return this.reviewRepo.save(review)
     }
 

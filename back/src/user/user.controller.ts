@@ -5,6 +5,8 @@ import { User } from 'src/entitys/User.entity';
 import { RoleGuard } from 'src/guards/role.guard';
 import { AddUserDto } from './dto/AddUser.dto';
 import { UpdateUserDto } from './dto/UpdateUser.dto';
+import { UpdateUserNameDto } from './dto/UpdateUserName.dto';
+import { UpdateUserPasswordDto } from './dto/UpdateUserPassword.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -37,6 +39,20 @@ export class UserController {
     updateAuthor(@Body() updateUserDto:UpdateUserDto,@GetUser() user:User){
         return this.userService.updateUser(updateUserDto,user)
     }  
+
+    @Put('name')
+    @Role(['ALL'])
+    @UsePipes(new ValidationPipe())
+    updateUserName(@Body() updateUserName:UpdateUserNameDto,@GetUser() user:User){
+        return this.userService.updateUserName(updateUserName,user)
+    }
+
+    @Put('password')
+    @Role(['ALL'])
+    @UsePipes(new ValidationPipe())
+    updateUserPassword(@Body() updateUserPasswordDto:UpdateUserPasswordDto,@GetUser() user:User){
+        return this.userService.updateUserPassword(updateUserPasswordDto,user)
+    }
     
     @Post()
     @Role(["ADMIN"])

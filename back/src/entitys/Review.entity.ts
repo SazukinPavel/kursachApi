@@ -11,6 +11,9 @@ export class Review{
     @Column()
     text:string
 
+    @Column()
+    isRight:boolean
+
     @CreateDateColumn()
     createdAt:Date
 

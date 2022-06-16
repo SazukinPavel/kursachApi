@@ -1,3 +1,0 @@
-const SECRET_KEY="95241234"
-
-export {SECRET_KEY}

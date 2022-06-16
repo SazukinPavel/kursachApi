@@ -32,8 +32,9 @@ export class AuthorsService {
         return this.responseConstructor.constructAuthorResponse(user,courses)
     }
 
-    updateAuthor(updateAuthorDto:UpdateAuthorDto,user:User){
-        return this.updateOrCreateAuthorBio(updateAuthorDto,user)
+    async updateAuthor(updateAuthorDto:UpdateAuthorDto,user:User){
+        await this.updateOrCreateAuthorBio(updateAuthorDto,user)
+        return user
     }
 
     findBioByUser(user:User){

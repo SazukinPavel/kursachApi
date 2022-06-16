@@ -1,9 +1,9 @@
 import { Author} from './Author.entity';
 import { RoleType } from "src/types/RoleType";
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Solution } from "./Solution.entity";
 import { Subscription } from "./Subscription.entity";
-import { Exclude } from 'class-transformer';
+import { classToPlain, Exclude } from 'class-transformer';
 import { AuthorBio } from './AuthorBio.entity';
 import { Review } from './Review.entity';
 
@@ -19,10 +19,15 @@ export class User{
     @Column()
     email:string
 
-    @Column()
-    password:string
+    @Column({default:false})
+    @Exclude({ toPlainOnly: true})
+    isEmailConfirmed:boolean
 
-    @Exclude({ toPlainOnly: true })
+    @Column()
+    @Exclude({ toPlainOnly: true})
+    password:string
+    
+
     @Column()
     role:RoleType
 
@@ -40,4 +45,9 @@ export class User{
 
     @OneToMany(()=>Review,review=>review.owner)
     reviews:Review[]
+
+    toJSON() {
+        return classToPlain(this);
+    }
+    
 }
